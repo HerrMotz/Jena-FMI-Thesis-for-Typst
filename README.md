@@ -20,7 +20,7 @@ typst init @preview/fmi-jena-thesis
 Or use it in an existing document:
 
 ```typst
-#import "@preview/fmi-jena-thesis:0.1.1": *
+#import "@preview/fmi-jena-thesis:0.2.0": *
 
 #set text(lang: "en") // or "de"
 
@@ -41,6 +41,8 @@ Or use it in an existing document:
   ),
 
   abstract: [Abstract here.],
+  // Mandatory unless the thesis is written in German:
+  abstract-german: [Zusammenfassung hier.],
   abbreviations: (
     ("API", "Application Programming Interface"),
   ),
@@ -80,6 +82,7 @@ The same folder also has black and white versions and a manual on how to use the
 | `cover-german` | `none` | German cover page, see the keys below. |
 | `cover-english` | `none` | English cover page, see the keys below. |
 | `abstract` | `none` | Abstract, shown on its own page. |
+| `abstract-german` | `none` | German abstract ("Zusammenfassung"), shown after `abstract`. **Mandatory** if the thesis is not written in German (PO § 20 Abs. 8); otherwise the document does not compile. |
 | `preface` | `none` | Preface, shown after the table of contents. |
 | `table-of-contents` | `outline(depth: 2)` | The table of contents, or `none`. |
 | `appendix` | `none` | Appendix content. Use `==` headings for its sections; they are numbered A, B, C, … |
@@ -87,10 +90,13 @@ The same folder also has black and white versions and a manual on how to use the
 | `expand-first-abbreviation` | `true` | Write the first occurrence of an abbreviation as "long (short)". |
 | `bibliography` | `none` | The result of `bibliography(...)`. |
 | `declaration` | `auto` | Declaration of academic integrity. `auto` picks English or German based on the text language, `none` omits it, and content replaces it. |
-| `chapter-pagebreak` | `true` | Start every chapter on a new page. |
+| `chapter-pagebreak` | `true` | Start every chapter on a new page. The Gestaltungshinweise require every part of the thesis to start on a new page. |
 | `two-sided` | `true` | Start chapters and front matter on odd pages, for double-sided printing. |
-| `external-link-circle` | `true` | Mark links to websites with a small circle. Turn it off for the print version. |
-| `use-print-margins` | `false` | Use book margins with a wide inner margin. Turn it on for the print version. |
+| `print` | `false` | Produce the print version: turns off `external-link-circle` and turns on `use-print-margins`. |
+| `external-link-circle` | `auto` | Mark links to websites with a small circle. `auto` follows `print` (on for screen, off for print). |
+| `use-print-margins` | `auto` | Use `print-margin` instead of `screen-margin`. `auto` follows `print`. |
+| `screen-margin` | `(x: 3cm, y: 2.8cm)` | Page margins of the screen version. |
+| `print-margin` | `auto` | Page margins of the print version. `auto` uses the margins recommended by the examination office: left (inside) 40 mm, right (outside) 20 mm, top and bottom 30 mm. |
 | `figure-index`, `table-index`, `listing-index` | `(enabled: false, title: auto)` | Lists of figures, tables and code listings. They are only shown if the document contains such figures. |
 
 The cover page dictionaries accept these keys, all optional: `faculty`, `university`, `type-of-work`, `academic-degree`, `field-of-study`, `author-info` (date and place of birth), `assessor` and `place-and-submission-date`.
@@ -98,9 +104,36 @@ The cover page dictionaries accept these keys, all optional: `faculty`, `univers
 Headings and other text inserted by the template follow the document language (`#set text(lang: "de")` or `"en"`).
 
 > [!IMPORTANT]
-> The English declaration of academic integrity is the university's English version; the German text is based on the university's German version. Check both against the current form against the current form of your examination office before you submit your thesis. If it differs, pass your own text via `declaration`.
+> The English declaration of academic integrity is the university's English version; the German text is based on the university's German version. Check both against the current form of your examination office (available in [Hanfried](https://www.hanfried.uni-jena.de/)) before you submit your thesis. If it differs, pass your own text via `declaration`.
 
 The package also exports `todo[...]` for visible notes and `blockquote[...]` for highlighted quotes.
+
+## Customizing the template
+
+New projects created from the template come with a file called `custom.typ`. It is the place for your own changes, for example:
+
+- a different look for links,
+- your own version of `todo`,
+- a different heading numbering or font size,
+- new helper functions, like a box for side notes.
+
+`custom.typ` explains step by step how it works and contains ready-made examples. To use an example, delete the `//` at the start of its lines. Because the file belongs to your project, your changes stay when you update the template to a newer version.
+
+In short, there are two kinds of changes:
+
+1. **Functions** (`#let todo(it) = ...`). A function in `custom.typ` with the same name as one of the template replaces it, because `main.typ` imports `custom.typ` after the template.
+2. **Rules** (`set` and `show`). Put them inside `custom-rules` in `custom.typ`. `main.typ` applies them to your chapters with `#show: custom-rules`, and they win over the template's own rules:
+   ```typst
+   #let custom-rules(body) = {
+     show link: set text(fill: blue) // blue links
+     set heading(numbering: "1.1")   // "1.1" instead of "1.1."
+     body
+   }
+   ```
+
+If you started from an older version of the template and have no `custom.typ`, create it with the content above and add these two lines to `main.typ`: `#import "custom.typ": *` directly after the template import, and `#show: custom-rules` directly after `#show: fsu.with(...)`.
+
+To learn more about rules, see the [Typst styling guide](https://typst.app/docs/reference/styling/).
 
 ## Recommended packages
 

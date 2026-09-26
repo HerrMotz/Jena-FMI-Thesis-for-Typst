@@ -1,4 +1,8 @@
-#import "@preview/fmi-jena-thesis:0.1.1": *
+#import "@preview/fmi-jena-thesis:0.2.0": *
+
+// Your own changes to the template (e.g. a different link style or your own `todo`).
+// Open custom.typ for a step-by-step guide.
+#import "custom.typ": *
 
 // Set your language as required ("en" or "de"). This also switches the language of
 // the headings and the declaration of academic integrity inserted by the template.
@@ -47,6 +51,15 @@
     #todo[Put your actual abstract here.]
   ],
 
+  // A German abstract ("Zusammenfassung") is MANDATORY if your thesis is not written
+  // in German (PO § 20 Abs. 8). The document will not compile without it unless the
+  // language above is set to "de".
+  abstract-german: [
+    #lorem(80)
+
+    #todo[Put your German abstract here.]
+  ],
+
   preface: [
     #lorem(60)
 
@@ -67,14 +80,29 @@
     ("WWW", "World Wide Web"),
   ),
 
-  external-link-circle: true, // Turn this off for the print version.
-  use-print-margins: false, // Turn this on for the print version to get book margins.
+  // Turn this on for the version you hand in on paper. Turning on `print` turns off
+  // `external-link-circle` and turns on `use-print-margins`. You can set those
+  // individually as you wish.
+  print: false,
+
+  // Page margins. Uncomment and change them if you like.
+  // Template defaults:
+  // screen-margin: (x: 3cm, y: 2.8cm),
+  // print-margin: (inside: 4cm, outside: 2cm, top: 3cm, bottom: 3cm),
+  // Recommended by the examination office (Gestaltungshinweise, § 5), used by default
+  // for the print version: left 40 mm, right 20 mm, top and bottom 30 mm each.
+  // screen-margin: (left: 4cm, right: 2cm, top: 3cm, bottom: 3cm),
+  // print-margin: (inside: 4cm, outside: 2cm, top: 3cm, bottom: 3cm), // two-sided
+  // print-margin: (left: 4cm, right: 2cm, top: 3cm, bottom: 3cm), // one-sided
 
   figure-index: (enabled: true),
   table-index: (enabled: true),
   listing-index: (enabled: true),
   bibliography: bibliography("bib.yaml", style: "ieee"),
 )
+
+// Apply the rules from custom.typ to your text.
+#show: custom-rules
 
 = Introduction <introduction>
 
