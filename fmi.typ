@@ -102,7 +102,8 @@
   // The paper size to use.
   paper-size: "a4",
 
-  // The university logo shown on the cover page(s), e.g. `image("logo.svg", width: 10cm)`.
+  // The university logo shown on the cover page(s), e.g.
+  // `image("Bildmarke_blue_23cm.png", width: 10cm)`.
   // The logo is not part of this package, see the README on how to obtain it.
   uni-logo: none,
 

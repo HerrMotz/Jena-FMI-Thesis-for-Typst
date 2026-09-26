@@ -12,9 +12,11 @@
   title: [Title of Your Thesis],
   author: "Your Name",
 
-  // The university logo is not included in this package. Download it from the
-  // university and uncomment this line, e.g.:
-  // uni-logo: image("logo.svg", width: 10cm),
+  // The university logo is not included in this package. Download
+  // "Bildmarke_blue_23cm.png" from the university's corporate design templates
+  // (see the package README, section "Getting the logo"), save it next to this file
+  // and uncomment this line:
+  // uni-logo: image("Bildmarke_blue_23cm.png", width: 10cm),
 
   cover-english: (
     faculty: "Faculty of Mathematics and Computer Science",
