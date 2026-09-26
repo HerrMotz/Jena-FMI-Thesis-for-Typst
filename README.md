@@ -20,7 +20,7 @@ typst init @preview/fmi-jena-thesis
 Or use it in an existing document:
 
 ```typst
-#import "@preview/fmi-jena-thesis:0.1.1": *
+#import "@preview/fmi-jena-thesis:0.2.0": *
 
 #set text(lang: "en") // or "de"
 
