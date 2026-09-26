@@ -1,4 +1,4 @@
-#import "@preview/fmi-jena-thesis:0.2.0": *
+#import "@preview/community-fmi-jena-thesis:0.2.0": *
 
 // Your own changes to the template (e.g. a different link style or your own `todo`).
 // Open custom.typ for a step-by-step guide.

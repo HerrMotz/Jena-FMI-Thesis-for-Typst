@@ -14,13 +14,13 @@ It follows the [Gestaltungshinweise zu Abschlussarbeiten an der Fakultät für M
 Create a new project from the template, either in the Typst web app ("Start from template") or on the command line:
 
 ```sh
-typst init @preview/fmi-jena-thesis
+typst init @preview/community-fmi-jena-thesis
 ```
 
 Or use it in an existing document:
 
 ```typst
-#import "@preview/fmi-jena-thesis:0.2.0": *
+#import "@preview/community-fmi-jena-thesis:0.2.0": *
 
 #set text(lang: "en") // or "de"
 
