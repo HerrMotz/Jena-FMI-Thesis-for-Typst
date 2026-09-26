@@ -1,103 +1,23 @@
-//#import "@preview/fmi-jena-thesis:0.1.0": *
-#import "../fmi.typ": *
-#import "@preview/equate:0.2.1": equate
+#import "@preview/fmi-jena-thesis:0.1.0": *
 
-/** RECOMMENDATIONS */
-// for definition and example subheadings
-#import "@preview/great-theorems:0.1.1": *
-#show: great-theorems-init
-#import "@preview/rich-counters:0.2.2": *
-
-// for listings
-#import "@preview/codly:1.1.1": *
-#show: codly-init.with()
-#codly(languages: (
-  HTML: (
-    name: "SPARQL", color: green
-  )
-))
-
-// for ER-Diagrams
-#import "@preview/pintorita:0.1.3"
-
-// set your language as required
+// Set your language as required ("en" or "de"). This also switches the language of
+// the headings and the declaration of academic integrity inserted by the template.
 #set text(lang: "en", region: "GB")
-#show raw.where(lang: "pintora"): it => pintorita.render(it.text)
 
-// opinionated abbreviations spaces
-#let spct = sym.space.punct
-#show "e.g.": [e.#sym.space.thin\g.] // unsure whether I like this.
-#show "i.e.": [i.#sym.space.thin\e.]
-#show "B. Sc.": [B.#spct\Sc.]
-#show "M. Sc.": [M.#spct\Sc.]
-#show "Prof. Dr.": [Prof.#spct\Dr.]
-
-// define your assessor here, for use in the cover sheet definition
-#let assessor = [Prof. Dr. First Person\ M. Sc. Second Person]
+// Define your assessors and degree here, for use on the cover page(s).
+#let assessor = [Prof. Dr. First Person\ M.Sc. Second Person]
 #let degree = [Bachelor of Science (B.Sc.)]
-
-#let mathcounter = rich-counter(
-  identifier: "mathblocks",
-  inherited_levels: 1
-)
-
-#let definition = mathblock(
-  blocktitle: "Definition",
-  counter: mathcounter
-)
-
-#let theorem = mathblock(
-  blocktitle: "Theorem",
-  counter: mathcounter,
-)
-
-#let lemma = mathblock(
-  blocktitle: "Lemma",
-  counter: mathcounter,
-)
-
-#let example = mathblock(
-  blocktitle: "Example",
-  counter: mathcounter,
-)
-
-#let remark = mathblock(
-  blocktitle: "Remark",
-  prefix: [_Remark._],
-  // inset: 5pt,
-  // fill: lime,
-  // radius: 5pt,
-)
-
-#let proof = proofblock()
-
-#let note(it) = text(fill: luma(150), size: 0.7em, it)
-
-#show: equate.with(breakable: true, sub-numbering: true)
-#set math.equation(numbering: "(A.1)", supplement: "Eq.")
-
-#set heading(numbering: "1.1")
-#set quote(block: true)
-
-#show heading.where(level: 1): it=> [#v(.5cm) #it #v(.2cm)]
-#show heading.where(level: 2): it=> [#v(.5cm) #it #v(.2cm)]
-
-#show raw: set text(
-  font: "Noto Sans Mono",
-  weight: 300,
-  ligatures: true,
-  discretionary-ligatures: true,
-  historical-ligatures: true,
-)
-/** END RECOMMENDATIONS */
 
 #show: fsu.with(
   title: [Title of Your Thesis],
   author: "Your Name",
-  uni-logo: image("fsulogo.svg", width: 10cm),
+
+  // The university logo is not included in this package. Download it from the
+  // university and uncomment this line, e.g.:
+  // uni-logo: image("logo.svg", width: 10cm),
 
   cover-english: (
-    faculty: "Faculty for Mathematics and Computer Science",
+    faculty: "Faculty of Mathematics and Computer Science",
     university: "Friedrich Schiller University Jena",
     type-of-work: "Bachelor Thesis",
     academic-degree: degree,
@@ -106,134 +26,91 @@
     assessor: assessor,
     place-and-submission-date: "Jena, 1 April 2025",
   ),
-  
+
+  // You can add a German cover page with the same keys:
+  // cover-german: (
+  //   faculty: "Fakultät für Mathematik und Informatik",
+  //   university: "Friedrich-Schiller-Universität Jena",
+  //   type-of-work: "Bachelorarbeit",
+  //   academic-degree: degree,
+  //   field-of-study: "Informatik",
+  //   author-info: "1. April 2001 in Wolkenkuckucksheim",
+  //   assessor: assessor,
+  //   place-and-submission-date: "Jena, 1. April 2025",
+  // ),
+
   abstract: [
-    This thesis introduces a ..., reducing the effort to ...
-    Building on this concept, the newly implemented program features a robust, modular Rust backend and a Web frontend. Early testing by digital humanities students with FactGrid demonstrated the program's usefulness.\ #todo[Put your actual abstract here]
+    #lorem(80)
+
+    #todo[Put your actual abstract here.]
   ],
-  
+
   preface: [
-    Special thanks go to ... for his contributions to implementing UI features. Your technical skills enriched the practical aspects of this work. 
+    #lorem(60)
 
-    I owe the programs early public exposure to .... Thank you for testing the early preview of the program in your seminar and for providing crucial support and manpower to accelerate its development.
-
-    My deep gratitude goes to ... and ... for their exceptional mentorship. Their wisdom, encouragement, and thoughtful feedback were instrumental in shaping this project and pushing it to its full potential.
-    
-    I also wish to acknowledge the many friends, colleagues, and mentors whose support, guidance, and generosity of spirit have enriched this undertaking in countless ways.
-
-    But without you, Mom and Dad, I would never have had the opportunity to enjoy writing this thesis and to encounter so many interesting people and challenges. My deepest gratitude goes to you.
-    
-    Each of you has played a vital role in bringing this thesis to fruition. Your support has made this journey not only intellectually rewarding but also personally meaningful.
-
-    To all of you, I extend my heartfelt gratitude.  
-
-    #todo[Put your own preface here.]
+    #todo[Put your own preface here or remove it.]
   ],
-  
+
   appendix: [
-    #set heading(outlined: false)
-    #heading(numbering: none, "Use of Generative AI")
-    This bachelor thesis was written in assistance of the OpenAI large language models GPT-4o and GPT-o1 preview. The large language models were used to ease literature research and to point out stylistic, orthographical, grammatical mistakes and to make formulation suggestions to the writer.
+    == Use of Generative AI
+    #todo[If permitted by your examiner, document the use of generative AI here.]
+
+    == Additional Material
+    #lorem(40)
   ],
-  
+
   abbreviations: (
-    ("W3C", "World Wide Web Consortium (registered trademark)"),
-    ("RDF", "Resource Description Framework"),
-    ("RDFS", "Resource Description Framework Schema (Ontology within RDF)"),
-    ("VQL", "Visual Query Language"),
-    ("WASM", [Web Assembly]),
     ("API", "Application Programming Interface"),
-    ("WWW", "World Wide Web")
+    ("RDF", "Resource Description Framework"),
+    ("WWW", "World Wide Web"),
   ),
 
-  external-link-circle: true, // TODO: TURN THIS OFF IF YOU GENERATE THE PRINT VARIANT
-  use-print-margins: false, //  TODO: TURN THIS ON BEFORE PRINTING TO GET BOOK MARGINS
-  
+  external-link-circle: true, // Turn this off for the print version.
+  use-print-margins: false, // Turn this on for the print version to get book margins.
+
   figure-index: (enabled: true),
   table-index: (enabled: true),
   listing-index: (enabled: true),
-  bibliography: bibliography(title: "Bibliography", style: "ieee", "bib.yaml")
+  bibliography: bibliography("bib.yaml", style: "ieee"),
 )
 
-= Introduction <heading:introduction>
+= Introduction <introduction>
 
-Over its thousands of years in existence, humanity has built an _infrastructure for knowledge_. It started out with stone tablets, evolved to hand-written papyrus books, libraries, the printing press and recently culminated in computer and the internet. Instead of using a library and asking a librarian, we usually consult "the internet" using a search engine -- even for small questions. Now, in order to answer a question, the search engine needs to be able to treat the contents of a website in a semantically correct way, just like a human would. This is achieved using i.e. network analysis and techniques of natural language processing. However, what if the contents of websites could be semantically annotated by their creators?
+This template follows the design guidelines for theses at the Faculty of Mathematics and Computer Science. Abbreviations such as API are written out on their first use and link to the list of abbreviations; later uses of API only show the short form. Citations work as usual @knuth1984. Links to #link("https://typst.app/docs")[external websites] are marked with a small circle.
 
-...
-
-For example, a researcher might ask: "What professions did members of societies dedicated to advancements in the natural sciences in Jena hold?" There are many ways to interpret this question: Does the question refer to registered clubs, meaning a legal entity or does a regular's table in a pub count? What does the term profession refer to? Is it the current _occupation_ or the _trained_ profession? Secondly, before starting to write a SPARQL query, the next step is to 'pre-formalise' the question using the concise 'subject, predicate, object' syntax, to adequately captures the interpretation's essence. This requires familiarity with the database's modelling conventions. For example, a researcher could query for entities classified as clubs and ensure that these entities are also associated with 'natural sciences' through the predicate 'interested in'. Alternatively, things related to 'Natural research association' through the predicate 'instance of' could be queried. Both options seem just, but in practice, only _one_ returns results.
-
-However, these initiatives want to reach a broader user base than the one likely to engage given these hurdles. It is unreasonable to expect users to navigate these steps without substantial training, a clear understanding of typical modelling practices, and in-depth knowledge of SPARQL language features.
-
-#figure(caption: [A possible SPARQL query to the professions of members of societies for natural sciences in Jena from the database FactGrid.],
-  [
-    #set text(size: 2pt)
-    ```HTML
-    PREFIX fg: <https://database.factgrid.de/entity/>
-    PREFIX fgt: <https://database.factgrid.de/prop/direct/>
-    SELECT DISTINCT ?careerStatement WHERE {
-      ?society fgt:P2 fg:Q266832 .
-      ?society fgt:P83 fg:Q10391 .
-      ?people fgt:P91 ?society .
-      ?people fgt:P165 ?careerStatement .
-    }
-    ```
-    #set text(size: 1em)
-  ]
-) <fig:example_query_introduction>
+#todo[Write your introduction.]
 
 == Problem
-#lorem(200)
+#lorem(120)
 
-== Proposal
-#lorem(200)
-
+== Contribution
+#lorem(120)
 
 = Preliminaries
-In order to do XY, it is essential to define YZ. #todo[Write the actual preliminaries.] #lorem(200)
 
-== Resource Description Framework
-In order to #lorem(100)
-
-== Wikibase Data Model
-
-#lorem(200)
-
-= Querying
-
-== SPARQL Protocol and RDF Query Language
-
-== Qualifiers
-
-= Mapping
-
-== Visual Query Graphs and Basic Graph Patterns
-
-== Specification
-
-== Implementation
-
-
-= Discussion <heading:discussion>
-
-#lorem(100)
+#lorem(80)
 
 #figure(
-  caption: [An overview of all features currently implemented comparing with other approaches.\ #text(size:.8em)["#sym.checkmark" means implemented and tested, "(#sym.checkmark)" means implemented but not bug-free and "#sym.crossmark" means not implemented. A full feature list can be found in the technical documentation of the repository.]],
-  table(columns: (2),
-    [Feature Description], [Implementation Status],
-    [Drawing a VQG with variables and literals], [#sym.checkmark],
-    [Searching for entities on multiple Wikibase instances], [#sym.checkmark],
-    [Creating SPARQL-SELECT queries from a VQG], [#sym.checkmark],
-    [Code editor for SPARQL queries], [#sym.checkmark], 
-    [Applying changes in the code editor to the VQG], [(#sym.checkmark)], 
-    [Enriching unseen entities with metadata from the Wikibase API], [(#sym.checkmark)], 
-    [Literals with standard RDF data types (string, int, date, ...)], [(#sym.checkmark)], 
-    [Use multiple Wikibase instances as data sources], [#sym.checkmark],  
-    [Meta-Info Panel], [#sym.checkmark], 
-    [Rendering qualifiers with the proposed visualisation], [#sym.crossmark], 
-    [Value Constraints], [#sym.crossmark], 
-    [Result Modifiers (e.g. `ORDER`, `LIMIT`)], [#sym.crossmark], 
-  )
+  caption: [A small example table.],
+  table(
+    columns: 2,
+    [Feature], [Status],
+    [Cover page], [#sym.checkmark],
+    [Declaration], [#sym.checkmark],
+  ),
 )
 
+#figure(
+  caption: [A code listing.],
+  ```rust
+  fn main() {
+      println!("Hello, Jena!");
+  }
+  ```,
+)
+
+$ sum_(k=1)^n k = (n(n+1)) / 2 $
+
+= Conclusion <conclusion>
+
+As discussed in @introduction, #lorem(60)

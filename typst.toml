@@ -2,11 +2,15 @@
 name = "fmi-jena-thesis"
 version = "0.1.0"
 entrypoint = "fmi.typ"
-authors = ["Friedrich Answin Daniel Motz"]
+authors = ["Friedrich Answin Daniel Motz <https://github.com/HerrMotz>"]
 license = "MIT-0"
-description = "Template for thesis' at the Faculty for Mathematics and Computer Sciences at the Friedrich-Schiller-University Jena."
-repository = "https://github.com/HerrMotz/FSU-Jena-FMI-Thesis-Template"
-categories = "thesis"
+description = "Thesis for the Faculty of Mathematics and Computer Science at Friedrich Schiller University Jena."
+repository = "https://github.com/HerrMotz/Jena-FMI-Thesis-for-Typst"
+keywords = ["thesis", "jena", "fsu", "fmi", "bachelor", "master", "university"]
+categories = ["thesis"]
+disciplines = ["computer-science", "mathematics"]
+compiler = "0.13.0"
+exclude = [".gitignore"]
 
 [template]
 path = "template"
