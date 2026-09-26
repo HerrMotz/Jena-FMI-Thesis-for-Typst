@@ -7,7 +7,7 @@ It follows the [Gestaltungshinweise zu Abschlussarbeiten an der Fakultät für M
 ![Cover page and first chapter](thumbnail.png)
 
 > [!WARNING]
-> This template is **not** affiliated with the University of Jena. The university logo is **not** included in this package, because it is the property of the University of Jena. Get it from the university's corporate design resources and pass it via `uni-logo` (see below).
+> This template is **not** affiliated with the University of Jena. The university logo is **not** included in this package, because it is the property of the University of Jena. See [Getting the logo](#getting-the-logo) for how to download it.
 
 ## Usage
 
@@ -27,7 +27,7 @@ Or use it in an existing document:
 #show: fsu.with(
   title: [Title of Your Thesis],
   author: "Your Name",
-  uni-logo: image("logo.svg", width: 10cm),
+  uni-logo: image("Bildmarke_blue_23cm.png", width: 10cm),
 
   cover-english: (
     faculty: "Faculty of Mathematics and Computer Science",
@@ -51,6 +51,21 @@ Or use it in an existing document:
 ...
 ```
 
+## Getting the logo
+
+The logo is only available to members of the university, so you have to download it yourself:
+
+1. Open [Templates in Corporate Design](https://www.uni-jena.de/en/163702/templates-in-corporate-design) and scroll down to the login form.
+2. Log in with your URZ username and password.
+3. Open *Logo-Vorlagen* → *Uni Jena – Bild-Wort-Marke* → *23cm* → *png*.
+4. Download *Uni Jena – Bildmarke_blue_23cm* and save it as `Bildmarke_blue_23cm.png` next to your `main.typ`.
+5. Uncomment the `uni-logo` line in `main.typ`:
+   ```typst
+   uni-logo: image("Bildmarke_blue_23cm.png", width: 10cm),
+   ```
+
+The same folder also has black and white versions and a manual on how to use the logo.
+
 > [!TIP]
 > You get a German cover page with `cover-german`, which takes the same keys. Pass both `cover-german` and `cover-english` to get both.
 
@@ -61,7 +76,7 @@ Or use it in an existing document:
 | `title` | `[Your Title]` | Title of the thesis. |
 | `author` | `"Author"` | Your name. |
 | `paper-size` | `"a4"` | Paper size. |
-| `uni-logo` | `none` | Content shown at the top of the cover page(s), e.g. `image("logo.svg", width: 10cm)`. |
+| `uni-logo` | `none` | Content shown at the top of the cover page(s), e.g. `image("Bildmarke_blue_23cm.png", width: 10cm)`. |
 | `cover-german` | `none` | German cover page, see the keys below. |
 | `cover-english` | `none` | English cover page, see the keys below. |
 | `abstract` | `none` | Abstract, shown on its own page. |
