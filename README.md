@@ -6,8 +6,7 @@ It follows the [Gestaltungshinweise zu Abschlussarbeiten an der Fakultät für M
 
 ![Cover page and first chapter](thumbnail.png)
 
-> [!WARNING]
-> This template is **not** affiliated with the University of Jena. The university logo is **not** included in this package, because it is the property of the University of Jena. See [Getting the logo](#getting-the-logo) for how to download it.
+> **Warning:** This template is **not** affiliated with the University of Jena. The university logo is **not** included in this package, because it is the property of the University of Jena. See [Getting the logo](#getting-the-logo) for how to download it.
 
 ## Usage
 
@@ -68,8 +67,7 @@ The logo is only available to members of the university, so you have to download
 
 The same folder also has black and white versions and a manual on how to use the logo.
 
-> [!TIP]
-> You get a German cover page with `cover-german`, which takes the same keys. Pass both `cover-german` and `cover-english` to get both.
+> **Tip:** You get a German cover page with `cover-german`, which takes the same keys. Pass both `cover-german` and `cover-english` to get both.
 
 ## Parameters
 
@@ -103,8 +101,7 @@ The cover page dictionaries accept these keys, all optional: `faculty`, `univers
 
 Headings and other text inserted by the template follow the document language (`#set text(lang: "de")` or `"en"`).
 
-> [!IMPORTANT]
-> The English declaration of academic integrity is the university's English version; the German text is based on the university's German version. Check both against the current form of your examination office (available in [Hanfried](https://www.hanfried.uni-jena.de/)) before you submit your thesis. If it differs, pass your own text via `declaration`.
+> **Important:** The English declaration of academic integrity is the university's English version; the German text is based on the university's German version. Check both against the current form of your examination office (available in [Hanfried](https://www.hanfried.uni-jena.de/)) before you submit your thesis. If it differs, pass your own text via `declaration`.
 
 The package also exports `todo[...]` for visible notes and `blockquote[...]` for highlighted quotes.
 
