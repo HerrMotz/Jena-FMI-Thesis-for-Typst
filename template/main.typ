@@ -1,4 +1,4 @@
-#import "@preview/fmi-jena-thesis:0.1.0": *
+#import "@preview/fmi-jena-thesis:0.1.1": *
 
 // Set your language as required ("en" or "de"). This also switches the language of
 // the headings and the declaration of academic integrity inserted by the template.
