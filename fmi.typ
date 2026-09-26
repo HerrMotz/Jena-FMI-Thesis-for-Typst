@@ -17,6 +17,7 @@
     abstract: "Abstract",
     preface: "Preface",
     abbreviations: "Abbreviations",
+    bibliography: "Bibliography",
     appendix: "Appendix",
     figures: "List of Figures",
     tables: "List of Tables",
@@ -29,7 +30,8 @@
     abstract: "Zusammenfassung",
     preface: "Vorwort",
     abbreviations: "Abkürzungsverzeichnis",
-    appendix: "Anhang",
+    bibliography: "Literaturverzeichnis",
+    appendix: "Anlagen",
     figures: "Abbildungsverzeichnis",
     tables: "Tabellenverzeichnis",
     listings: "Quelltextverzeichnis",
@@ -127,6 +129,11 @@
   // An abstract for your work. Can be omitted if you don't have one.
   abstract: none,
 
+  // A German abstract ("Zusammenfassung"), shown directly after `abstract`.
+  // Mandatory if the thesis is not written in German (PO § 20 Abs. 8): the document
+  // does not compile without it unless the text language is German.
+  abstract-german: none,
+
   // The contents of the preface page. Displayed after the table of contents.
   // Can be omitted if you don't have one.
   preface: none,
@@ -159,17 +166,35 @@
   declaration: auto,
 
   // Whether to start a chapter on a new page.
+  // Note: the Gestaltungshinweise of the examination office require every part of the
+  // thesis (title page, abstract, table of contents, preface, main text, bibliography,
+  // appendix, declaration) to start on a new page.
   chapter-pagebreak: true,
 
   // Whether chapters and front matter start on odd (right-hand) pages, inserting blank
   // pages where needed. Recommended for double-sided printing.
   two-sided: true,
 
-  // Whether to display a maroon circle next to external links.
-  external-link-circle: true,
+  // Whether to produce the print version. Turning on `print` turns off
+  // `external-link-circle` and turns on `use-print-margins`. You can set those two
+  // individually as you wish; they override `print`.
+  print: false,
 
-  // Whether to use printing margins with a big margin in the middle.
-  use-print-margins: false,
+  // Whether to display a maroon circle next to external links.
+  // `auto` means: on, unless `print` is on.
+  external-link-circle: auto,
+
+  // Whether to use `print-margin` instead of `screen-margin`.
+  // `auto` means: on if `print` is on.
+  use-print-margins: auto,
+
+  // Page margins of the screen version.
+  screen-margin: (x: 3cm, y: 2.8cm),
+
+  // Page margins of the print version. `auto` uses the margins recommended by the
+  // examination office (Gestaltungshinweise, § 5): left 40 mm, right 20 mm, top and
+  // bottom 30 mm each. With `two-sided`, left and right become inside and outside.
+  print-margin: auto,
 
   // Display a list of figures (images). `title: auto` uses a translated default.
   figure-index: (enabled: false, title: auto),
@@ -192,13 +217,22 @@
   // Set raw text font.
   show raw: set text(font: "DejaVu Sans Mono", size: 8.8pt)
 
+  // Resolve the print-dependent options.
+  let external-link-circle = if external-link-circle == auto { not print } else { external-link-circle }
+  let use-print-margins = if use-print-margins == auto { print } else { use-print-margins }
+
   // Configure page size and margins.
-  let print-margin = (inside: 4.5cm, outside: 3cm, bottom: 1.75cm, top: 2.25cm)
-  let digital-margin = (x: 3cm, y: 2.8cm)
+  let print-margin = if print-margin != auto {
+    print-margin
+  } else if two-sided {
+    (inside: 4cm, outside: 2cm, top: 3cm, bottom: 3cm)
+  } else {
+    (left: 4cm, right: 2cm, top: 3cm, bottom: 3cm)
+  }
 
   set page(
     paper: paper-size,
-    margin: if use-print-margins { print-margin } else { digital-margin },
+    margin: if use-print-margins { print-margin } else { screen-margin },
   )
 
   // Starts a new (odd, if two-sided) page, unless we are already at the start of one.
@@ -258,7 +292,7 @@
     set text(lang: "de")
     cover-page(cover-german, (
       degree: "zur Erlangung des akademischen Grades",
-      field: "im Studienfach",
+      field: "im Studiengang",
       submitted-by: "eingereicht von",
       born: "geboren am",
       assessor: "Betreuer",
@@ -277,16 +311,31 @@
     ))
   }
 
-  // Abstract.
-  if abstract != none {
+  // A thesis that is not written in German needs a German abstract (PO § 20 Abs. 8).
+  context if text.lang != "de" and abstract-german == none {
+    panic(
+      "A German abstract is mandatory for theses not written in German (PO § 20 Abs. 8). "
+        + "Please pass it as `abstract-german: [...]`.",
+    )
+  }
+
+  // Abstract page(s).
+  let abstract-page(body) = {
     new-page
     align(horizon + center, block(width: 90%, {
       context tracked-smallcaps(translate("abstract"))
       block(width: 80%, {
         set par(leading: 0.78em, justify: true, linebreaks: "optimized")
-        abstract
+        body
       })
     }))
+  }
+  if abstract != none {
+    abstract-page(abstract)
+  }
+  if abstract-german != none {
+    set text(lang: "de")
+    abstract-page(abstract-german)
   }
 
   // Configure paragraph properties.
@@ -328,6 +377,33 @@
     table-of-contents
   }
 
+  // Normalize and sort abbreviations.
+  let abbreviations = if type(abbreviations) == dictionary {
+    abbreviations.pairs()
+  } else {
+    abbreviations
+  }
+  let abbreviations = abbreviations.sorted(key: a => lower(a.at(0)))
+  let abbreviation-label(short) = label("fmi-abbreviation-" + short)
+
+  // Display list of abbreviations directly after the table of contents, as the
+  // Gestaltungshinweise ask for.
+  if abbreviations.len() > 0 {
+    new-page
+    context heading(level: 1, numbering: none, translate("abbreviations"))
+    grid(
+      columns: (auto, 1fr),
+      column-gutter: 2em,
+      row-gutter: 0.8em,
+      ..abbreviations
+        .map(((short, long)) => (
+          [#text(hyphenate: false, strong(short))#abbreviation-label(short)],
+          long,
+        ))
+        .flatten(),
+    )
+  }
+
   // Display preface.
   if preface != none {
     new-page
@@ -348,6 +424,12 @@
     footer: context {
       // Get current page number.
       let i = counter(page).get().first()
+
+      // The declaration counts, but shows no page number (Gestaltungshinweise).
+      let declaration-start = query(<fmi-declaration>)
+      if declaration-start.len() > 0 and here().page() >= declaration-start.first().location().page() {
+        return
+      }
 
       // Align right for odd pages and left for even.
       let is-odd = calc.odd(i)
@@ -406,15 +488,6 @@
   // Use smallcaps for table header row.
   show table.cell.where(y: 0): tracked-smallcaps
 
-  // Normalize and sort abbreviations.
-  let abbreviations = if type(abbreviations) == dictionary {
-    abbreviations.pairs()
-  } else {
-    abbreviations
-  }
-  let abbreviations = abbreviations.sorted(key: a => lower(a.at(0)))
-  let abbreviation-label(short) = label("fmi-abbreviation-" + short)
-
   // The main body. The abbreviation rule is scoped to this block.
   if abbreviations.len() == 0 {
     body
@@ -452,23 +525,12 @@
     show std.bibliography: set text(0.85em)
     // Use default paragraph properties for bibliography.
     show std.bibliography: set par(leading: 0.65em, justify: false, linebreaks: auto)
-    bibliography
-  }
-
-  // Display list of abbreviations.
-  if abbreviations.len() > 0 {
-    context heading(level: 1, numbering: none, translate("abbreviations"))
-    grid(
-      columns: (auto, 1fr),
-      column-gutter: 2em,
-      row-gutter: 0.8em,
-      ..abbreviations
-        .map(((short, long)) => (
-          [#text(hyphenate: false, strong(short))#abbreviation-label(short)],
-          long,
-        ))
-        .flatten(),
-    )
+    // The heading must read "Literaturverzeichnis" (Gestaltungshinweise). This only
+    // applies if you did not pass your own `title` to `bibliography(...)`.
+    context {
+      set std.bibliography(title: translate("bibliography"))
+      bibliography
+    }
   }
 
   // Display indices of figures, tables, and listings.
@@ -504,6 +566,8 @@
   // Display declaration of academic integrity.
   if declaration != none {
     new-page
+    // Marks where the declaration starts: its pages show no page number.
+    [#metadata(none) <fmi-declaration>]
     context heading(numbering: none, level: 1, translate("declaration"))
     if declaration == auto {
       context if text.lang == "de" { declaration-de } else { declaration-en }
