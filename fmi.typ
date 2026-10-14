@@ -233,15 +233,20 @@
     let next = query(selector(<fmi-chapter>).after(it.location()))
     it.location().page() < here().page() and next.len() > 0 and next.first().location().page() > here().page()
   })
-  // Black, so that the line matches the text.
-  let rule = line(length: 100%, stroke: 0.5pt + black)
+  // All lines of the template use the stroke of Typst's footnote separator, so that they
+  // look the same.
+  let rule-stroke = 0.05em
+  let rule = line(length: 100%, stroke: rule-stroke)
   set page(
     header: context {
       let starts-chapter = query(<fmi-chapter>).any(it => it.location().page() == here().page())
       if in-main() and not starts-chapter and not in-declaration() and not is-blank() {
-        set text(size: 0.75em)
-        grid(columns: (1fr, auto), column-gutter: 2em, align: (left + bottom, right + bottom), title, author)
-        v(-0.5em)
+        {
+          set text(size: 0.75em)
+          grid(columns: (1fr, auto), column-gutter: 2em, align: (left + bottom, right + bottom), title, author)
+          v(-0.5em)
+        }
+        // Outside of the smaller text, as `rule-stroke` depends on the font size.
         rule
       }
     },
@@ -595,8 +600,8 @@
     context grid(
       columns: (1fr, 1fr),
       row-gutter: 1em,
-      line(length: 150pt, stroke: (dash: "dashed")),
-      line(length: 200pt, stroke: (dash: "dashed")),
+      line(length: 150pt, stroke: rule-stroke),
+      line(length: 200pt, stroke: rule-stroke),
       translate("place-and-date"),
       translate("signature"),
     )
