@@ -23,7 +23,7 @@
 // 1. Your own functions (`#let ...`), in the part "Part 1" below.
 //
 //    A function you define here with the same name as one of the template, such as
-//    `todo` or `blockquote`, replaces the template's version. This works because
+//    `todo` or `definition`, replaces the template's version. This works because
 //    main.typ loads this file after the template.
 //
 //    You can also add completely new functions and use them in main.typ, e.g.
@@ -60,20 +60,17 @@
 //  Part 1: your own functions
 // =====================================================================================
 
-// Example: a more visible `todo`, in red and bold.
+// Example: a more visible `todo`, in red and bold. Note that it is no longer listed
+// after the table of contents.
 // #let todo(it) = text(fill: red, weight: "bold")[TODO: #it]
 
-// Example: hide all todos (e.g. for the final version).
-// #let todo(it) = none
-
-// Example: a new function for side notes. Use it in main.typ as `#note[Your text]`.
-// #let note(body) = block(
-//   fill: luma(240),
-//   inset: 8pt,
-//   radius: 4pt,
-//   width: 100%,
-//   [*Note:* #body],
-// )
+// Example: a new box for theorems, in the style of `definition`. Use it in main.typ as
+// `#theorem[Your text]`, or `#theorem(title: [Name], figured: true)[...] <label>` for
+// a numbered theorem you can reference.
+// `make-box` takes the figure kind, the name shown in the title and optionally
+// `bar` and `fill` colours ("primary", "primary-light", "primary-dark", "tint",
+// "tint-strong") and `dotted: true` for a dotted line.
+// #let theorem = make-box("theorem", [Theorem], bar: "primary-dark")
 
 // =====================================================================================
 //  Part 2: your own rules

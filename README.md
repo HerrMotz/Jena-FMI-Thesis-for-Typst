@@ -4,7 +4,7 @@ A Typst template for Bachelor and Master theses at the Faculty of Mathematics an
 
 It follows the [Gestaltungshinweise zu Abschlussarbeiten an der Fakultät für Mathematik und Informatik](https://www.fmi.uni-jena.de/fmi_femedia/5973/gestaltungshinweise-abschlussarbeiten.pdf?nonactive=1&suffix=pdf). It creates the cover page(s) with all mandatory information, the page numbering, the table of contents, lists of figures, tables and listings, a list of abbreviations, the appendix and the declaration of academic integrity.
 
-![Cover page and first chapter](preview.png)
+![Cover page and a chapter page](preview.png)
 
 > **Warning:** This template is **not** affiliated with the University of Jena. The university logo is **not** included in this package, because it is the property of the University of Jena. See [Getting the logo](#getting-the-logo) for how to download it.
 
@@ -19,7 +19,7 @@ typst init @preview/community-fmi-jena-thesis
 Or use it in an existing document:
 
 ```typst
-#import "@preview/community-fmi-jena-thesis:0.2.0": *
+#import "@preview/community-fmi-jena-thesis:0.3.0": *
 
 #set text(lang: "en") // or "de"
 
@@ -90,11 +90,14 @@ The same folder also has black and white versions and a manual on how to use the
 | `declaration` | `auto` | Declaration of academic integrity. `auto` picks English or German based on the text language, `none` omits it, and content replaces it. |
 | `chapter-pagebreak` | `true` | Start every chapter on a new page. The Gestaltungshinweise require every part of the thesis to start on a new page. |
 | `two-sided` | `true` | Start chapters and front matter on odd pages, for double-sided printing. |
-| `print` | `false` | Produce the print version: turns off `external-link-circle` and turns on `use-print-margins`. |
-| `external-link-circle` | `auto` | Mark links to websites with a small circle. `auto` follows `print` (on for screen, off for print). |
+| `print` | `false` | Produce the print version: turns off `show-todos` and turns on `use-print-margins`. |
+| `show-todos` | `auto` | Show todos, side notes and the list of todos after the table of contents. `auto` follows `print` (on for screen, off for print). |
 | `use-print-margins` | `auto` | Use `print-margin` instead of `screen-margin`. `auto` follows `print`. |
-| `screen-margin` | `(x: 3cm, y: 2.8cm)` | Page margins of the screen version. |
+| `screen-margin` | `(x: 3cm, y: 3cm)` | Page margins of the screen version. The default gives the same text area as the print version, so lines and pages break at the same places in both. |
 | `print-margin` | `auto` | Page margins of the print version. `auto` uses the margins recommended by the examination office: left (inside) 40 mm, right (outside) 20 mm, top and bottom 30 mm. |
+| `primary-color` | `rgb("#007a8b")` | Colour of headings, boxes, todos and lines. The default is the colour of the Faculty of Mathematics and Computer Science; all other colours are derived from it. |
+| `heading-color` | `auto` | Colour of headings and their numbers, e.g. `black` for plain headings. `auto` uses `primary-color`. |
+| `element-color` | `auto` | Colour of boxes, todos, side notes, table lines and inline code, e.g. `luma(90)` for grey ones. `auto` uses `primary-color`. |
 | `figure-index`, `table-index`, `listing-index` | `(enabled: false, title: auto)` | Lists of figures, tables and code listings. They are only shown if the document contains such figures. |
 
 The cover page dictionaries accept these keys, all optional: `faculty`, `university`, `type-of-work`, `academic-degree`, `field-of-study`, `author-info` (date and place of birth), `assessor` and `place-and-submission-date`.
@@ -103,7 +106,22 @@ Headings and other text inserted by the template follow the document language (`
 
 > **Important:** The English declaration of academic integrity is the university's English version; the German text is based on the university's German version. Check both against the current form of your examination office (available in [Hanfried](https://www.hanfried.uni-jena.de/)) before you submit your thesis. If it differs, pass your own text via `declaration`.
 
-The package also exports `todo[...]` for visible notes and `blockquote[...]` for highlighted quotes.
+From the first chapter on, every page shows the title and your name at the top (except pages that start a chapter) and the page number at the bottom. Blank pages and the declaration stay empty.
+
+## Elements
+
+The package also exports these elements for your text:
+
+| Element | Description |
+| --- | --- |
+| `definition[...]`, `example[...]`, `notice[...]`, `hint[...]`, `task[...]`, `solution[...]` | Tinted boxes with a line on the left. `title: [...]` adds a name ("Definition — Graph"). With `figured: true` the box is numbered and can be referenced: `#definition(figured: true)[...] <def-graph>`, then `@def-graph` gives "Definition 1". |
+| `sentence[...]` | A numbered example sentence, "(1) ...". A reference to it shows "(1)". |
+| `todo[...]` | A highlighted note for things still to do. All todos are listed, with links, at the bottom of the table of contents. |
+| `sidenote[...]` | A short note in the outer page margin. |
+| `blockquote(source: [...])[...]` | An indented quotation with its source below. Inline quotes with a source, `#quote(attribution: [...])[...]`, put the source into a footnote. |
+| `make-box(kind, name, ...)` | Makes your own box, see `custom.typ`. |
+
+Todos and side notes disappear in the print version, or with `show-todos: false`.
 
 ## Customizing the template
 
@@ -112,7 +130,7 @@ New projects created from the template come with a file called `custom.typ`. It 
 - a different look for links,
 - your own version of `todo`,
 - a different heading numbering or font size,
-- new helper functions, like a box for side notes.
+- new boxes, like one for theorems.
 
 `custom.typ` explains step by step how it works and contains ready-made examples. To use an example, delete the `//` at the start of its lines. Because the file belongs to your project, your changes stay when you update the template to a newer version.
 
@@ -140,6 +158,10 @@ The template works without other packages. These packages from Typst Universe wo
 - [`codly`](https://typst.app/universe/package/codly) for nicer code listings
 - [`equate`](https://typst.app/universe/package/equate) for sub-numbered equations
 - [`pintorita`](https://typst.app/universe/package/pintorita) for diagrams
+
+## Credits
+
+The boxes, todos, side notes, the hanging heading numbers, the quotations and the header and footer are adapted from the seminar paper of [grape-suite](https://github.com/piepert/grape-suite) by Tristan Pieper (MIT License, see `elements.typ`).
 
 ## License
 

@@ -1,6 +1,6 @@
 [package]
 name = "community-fmi-jena-thesis"
-version = "0.2.0"
+version = "0.3.0"
 entrypoint = "fmi.typ"
 authors = ["Friedrich Answin Daniel Motz <https://github.com/HerrMotz>"]
 license = "MIT-0"

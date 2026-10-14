@@ -1,4 +1,4 @@
-#import "@preview/community-fmi-jena-thesis:0.2.0": *
+#import "@preview/community-fmi-jena-thesis:0.3.0": *
 
 // Your own changes to the template (e.g. a different link style or your own `todo`).
 // Open custom.typ for a step-by-step guide.
@@ -80,14 +80,20 @@
     ("WWW", "World Wide Web"),
   ),
 
-  // Turn this on for the version you hand in on paper. Turning on `print` turns off
-  // `external-link-circle` and turns on `use-print-margins`. You can set those
+  // Turn this on for the version you hand in on paper. Turning on `print` hides todos
+  // and side notes (`show-todos`) and turns on `use-print-margins`. You can set those
   // individually as you wish.
   print: false,
 
+  // The colour of headings, boxes and lines. Default: the colour of the faculty.
+  // primary-color: rgb("#007a8b"),
+  // Or separately: `black` gives plain headings, `luma(90)` grey boxes and todos.
+  // heading-color: black,
+  // element-color: luma(90),
+
   // Page margins. Uncomment and change them if you like.
-  // Template defaults:
-  // screen-margin: (x: 3cm, y: 2.8cm),
+  // Template defaults (both give the same text area):
+  // screen-margin: (x: 3cm, y: 3cm),
   // print-margin: (inside: 4cm, outside: 2cm, top: 3cm, bottom: 3cm),
   // Recommended by the examination office (Gestaltungshinweise, § 5), used by default
   // for the print version: left 40 mm, right 20 mm, top and bottom 30 mm each.
@@ -106,9 +112,11 @@
 
 = Introduction <introduction>
 
-This template follows the design guidelines for theses at the Faculty of Mathematics and Computer Science. Abbreviations such as API are written out on their first use and link to the list of abbreviations; later uses of API only show the short form. Citations work as usual @knuth1984. Links to #link("https://typst.app/docs")[external websites] are marked with a small circle.
+This template follows the design guidelines for theses at the Faculty of Mathematics and Computer Science. Abbreviations such as API are written out on their first use and link to the list of abbreviations; later uses of API only show the short form. Citations work as usual @knuth1984, and so do #link("https://typst.app/docs")[links].
 
 #todo[Write your introduction.]
+
+All todos are listed after the table of contents, and short notes can go into the margin#sidenote[A side note.]. Both disappear in the print version.
 
 == Problem
 #lorem(120)
@@ -140,6 +148,22 @@ This template follows the design guidelines for theses at the Faculty of Mathema
 )
 
 $ sum_(k=1)^n k = (n(n+1)) / 2 $
+
+Boxes highlight definitions, examples and notes. With `figured: true`, a box is numbered and can be referenced: see @def-graph.
+
+#definition(title: [Graph], figured: true)[
+  A _graph_ is a pair $G = (V, E)$ of a set of vertices $V$ and a set of edges $E subset.eq V times V$.
+] <def-graph>
+
+#example[
+  The graph $G = ({1, 2}, {(1, 2)})$ has two vertices and one edge.
+]
+
+#notice[There are also `hint`, `task` and `solution` boxes.]
+
+#blockquote(source: [Donald E. Knuth])[
+  Beware of bugs in the above code; I have only proved it correct, not tried it.
+]
 
 = Conclusion <conclusion>
 
