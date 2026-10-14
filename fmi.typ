@@ -1,48 +1,12 @@
 // Thesis template for the Faculty of Mathematics and Computer Science
 // at the Friedrich Schiller University Jena.
 
-// Colors used across the template.
-#let stroke-color = luma(200)
-#let fill-color = luma(250)
+#import "elements.typ": *
 
 // Small caps and upper case with increased spacing between characters.
 // Default tracking is 0pt.
 #let tracked-smallcaps(body) = smallcaps(text(tracking: 0.6pt, body))
 #let tracked-upper(body) = upper(text(tracking: 0.6pt, body))
-
-// Strings the template inserts itself, by language. Anything that is not German
-// falls back to English.
-#let translations = (
-  en: (
-    abstract: "Abstract",
-    preface: "Preface",
-    abbreviations: "Abbreviations",
-    bibliography: "Bibliography",
-    appendix: "Appendix",
-    figures: "List of Figures",
-    tables: "List of Tables",
-    listings: "List of Listings",
-    declaration: "Declaration of Academic Integrity",
-    place-and-date: "Place and date",
-    signature: "Signature",
-  ),
-  de: (
-    abstract: "Zusammenfassung",
-    preface: "Vorwort",
-    abbreviations: "Abkürzungsverzeichnis",
-    bibliography: "Literaturverzeichnis",
-    appendix: "Anlagen",
-    figures: "Abbildungsverzeichnis",
-    tables: "Tabellenverzeichnis",
-    listings: "Quelltextverzeichnis",
-    declaration: "Eigenständigkeitserklärung",
-    place-and-date: "Ort, Datum",
-    signature: "Unterschrift",
-  ),
-)
-
-// Look up a translated string for the current text language. Needs context.
-#let translate(key) = translations.at(text.lang, default: translations.en).at(key)
 
 // The fields of a cover page. All of them are optional.
 #let cover-fields = (
@@ -175,26 +139,39 @@
   // pages where needed. Recommended for double-sided printing.
   two-sided: true,
 
-  // Whether to produce the print version. Turning on `print` turns off
-  // `external-link-circle` and turns on `use-print-margins`. You can set those two
-  // individually as you wish; they override `print`.
+  // Whether to produce the print version. Turning on `print` turns off `show-todos`
+  // and turns on `use-print-margins`. You can set those two individually as you wish;
+  // they override `print`.
   print: false,
 
-  // Whether to display a maroon circle next to external links.
-  // `auto` means: on, unless `print` is on.
-  external-link-circle: auto,
+  // Whether to show todos and side notes, and the list of todos after the table of
+  // contents. `auto` means: on, unless `print` is on.
+  show-todos: auto,
 
   // Whether to use `print-margin` instead of `screen-margin`.
   // `auto` means: on if `print` is on.
   use-print-margins: auto,
 
-  // Page margins of the screen version.
-  screen-margin: (x: 3cm, y: 2.8cm),
+  // Page margins of the screen version. The default gives the same text area as the
+  // print version, so lines and pages break at the same places in both.
+  screen-margin: (x: 3cm, y: 3cm),
 
   // Page margins of the print version. `auto` uses the margins recommended by the
   // examination office (Gestaltungshinweise, § 5): left 40 mm, right 20 mm, top and
   // bottom 30 mm each. With `two-sided`, left and right become inside and outside.
   print-margin: auto,
+
+  // The colour of headings, boxes, todos and lines. The default is the colour of the
+  // Faculty of Mathematics and Computer Science; all other colours are derived from it.
+  primary-color: fmi-teal,
+
+  // The colour of headings and their numbers, e.g. `black` for plain headings.
+  // `auto` uses `primary-color`.
+  heading-color: auto,
+
+  // The colour of boxes, todos, side notes, table lines and inline code, e.g. `luma(90)`
+  // for grey ones. `auto` uses `primary-color`.
+  element-color: auto,
 
   // Display a list of figures (images). `title: auto` uses a translated default.
   figure-index: (enabled: false, title: auto),
@@ -218,7 +195,7 @@
   show raw: set text(font: "DejaVu Sans Mono", size: 8.8pt)
 
   // Resolve the print-dependent options.
-  let external-link-circle = if external-link-circle == auto { not print } else { external-link-circle }
+  let show-todos = if show-todos == auto { not print } else { show-todos }
   let use-print-margins = if use-print-margins == auto { print } else { use-print-margins }
 
   // Configure page size and margins.
@@ -230,13 +207,53 @@
     (left: 4cm, right: 2cm, top: 3cm, bottom: 3cm)
   }
 
-  set page(
-    paper: paper-size,
-    margin: if use-print-margins { print-margin } else { screen-margin },
-  )
+  let margin = if use-print-margins { print-margin } else { screen-margin }
+  set page(paper: paper-size, margin: margin, background: sidenote-layer(margin))
+
+  // Colours and todos, for the elements from elements.typ.
+  let heading-color = if heading-color == auto { primary-color } else { heading-color }
+  let colors = palette(if element-color == auto { primary-color } else { element-color })
+  colors-state.update(colors)
+  show-todos-state.update(show-todos)
 
   // Starts a new (odd, if two-sided) page, unless we are already at the start of one.
-  let new-page = pagebreak(weak: true, to: if two-sided { "odd" })
+  // The marker lets the header and footer find the blank pages this inserts.
+  let new-page = [#metadata(none)<fmi-page-break>] + pagebreak(weak: true, to: if two-sided { "odd" })
+
+  // Configure header and footer, from the first chapter on. The header shows the title
+  // and the author, except on pages that start a chapter. The footer shows the page
+  // number. The declaration counts, but shows no page number (Gestaltungshinweise).
+  let in-main() = query(<fmi-main>).any(it => it.location().page() < here().page())
+  let in-declaration() = {
+    let declaration-start = query(<fmi-declaration>)
+    declaration-start.len() > 0 and here().page() >= declaration-start.first().location().page()
+  }
+  // Blank pages lie between a page break and the start of the next chapter.
+  let is-blank() = query(<fmi-page-break>).any(it => {
+    let next = query(selector(<fmi-chapter>).after(it.location()))
+    it.location().page() < here().page() and next.len() > 0 and next.first().location().page() > here().page()
+  })
+  // Black, so that the line matches the text.
+  let rule = line(length: 100%, stroke: 0.5pt + black)
+  set page(
+    header: context {
+      let starts-chapter = query(<fmi-chapter>).any(it => it.location().page() == here().page())
+      if in-main() and not starts-chapter and not in-declaration() and not is-blank() {
+        set text(size: 0.75em)
+        grid(columns: (1fr, auto), column-gutter: 2em, align: (left + bottom, right + bottom), title, author)
+        v(-0.5em)
+        rule
+      }
+    },
+    footer: context {
+      if in-main() and not in-declaration() and not is-blank() {
+        rule
+        v(-0.5em)
+        align(center, text(size: 0.75em, counter(page).display()))
+      }
+    },
+  )
+
 
   let cover-page(cover, labels) = {
     let cover = cover-fields + cover
@@ -343,6 +360,24 @@
   // Default spacing is 1.2em.
   set par(leading: 0.7em, spacing: 1.35em, justify: true, linebreaks: "optimized")
 
+  // Colour the headings and hang their numbers into the left margin. This rule comes
+  // first, so that the rules below still see the heading.
+  show heading.where(level: 1).or(heading.where(level: 2)).or(heading.where(level: 3)): set text(
+    fill: heading-color,
+  )
+  show heading: it => context {
+    let number = if it.numbering != none and it.level <= 3 {
+      numbering(it.numbering, ..counter(heading).at(here()))
+    }
+    if number == none {
+      it
+    } else {
+      let number = text(weight: "regular", number + [ \u{200b}])
+      let width = measure(number).width
+      pad(left: -width, par(hanging-indent: width, justify: false, number + it.body))
+    }
+  }
+
   // Add vertical space after headings.
   show heading: it => {
     it
@@ -352,19 +387,27 @@
   show heading: set text(hyphenate: false)
 
   // Start chapters on a new page.
+  // The marker is where the chapter really starts. The heading's own location can be
+  // on the page before, e.g. if a rule of the user adds space above the heading.
   show heading.where(level: 1): it => {
     if chapter-pagebreak { new-page }
+    [#metadata(none)<fmi-chapter>]
     it
   }
 
-  // Show a small maroon circle next to links to external websites.
-  show link: it => {
-    it
-    if external-link-circle and type(it.dest) == str {
-      sym.wj
-      h(1.6pt)
-      sym.wj
-      super(box(height: 3.8pt, circle(radius: 1.2pt, stroke: 0.7pt + rgb("#993333"))))
+  // Format quotations: indented and slightly smaller, with the source below. The source
+  // of an inline quotation goes into a footnote.
+  show quote.where(block: true): it => pad(left: 1.5em, y: 0.65em, {
+    set par(spacing: 0.65em, leading: 0.65em)
+    block(sticky: it.attribution != none, text(size: 0.9em, it.body))
+    if it.attribution != none { block(above: 0.5em, text(size: 0.75em, it.attribution)) }
+  })
+  show quote.where(block: false): it => {
+    if it.attribution == none {
+      it
+    } else {
+      quote(it.body)
+      footnote(it.attribution)
     }
   }
 
@@ -375,6 +418,11 @@
   if table-of-contents != none {
     new-page
     table-of-contents
+    // The open todos, at the bottom of the page.
+    context if show-todos and query(<fmi-todo>).len() > 0 {
+      v(1fr)
+      list-todos()
+    }
   }
 
   // Normalize and sort abbreviations.
@@ -419,55 +467,23 @@
   show heading.where(level: 6): it => text(weight: "regular", style: "italic", it.body)
   show heading.where(level: 6): set heading(outlined: false)
 
-  // Configure page numbering and footer.
-  set page(
-    footer: context {
-      // Get current page number.
-      let i = counter(page).get().first()
-
-      // The declaration counts, but shows no page number (Gestaltungshinweise).
-      let declaration-start = query(<fmi-declaration>)
-      if declaration-start.len() > 0 and here().page() >= declaration-start.first().location().page() {
-        return
-      }
-
-      // Align right for odd pages and left for even.
-      let is-odd = calc.odd(i)
-      let aln = if is-odd { right } else { left }
-
-      // Are we on a page that starts a chapter?
-      let target = heading.where(level: 1)
-      if query(target).any(it => it.location().page() == here().page()) {
-        return align(aln)[#i]
-      }
-
-      // Find the chapter of the section we are currently in.
-      let before = query(target.before(here()))
-      if before.len() > 0 {
-        let current = before.last()
-        let gap = 1.75em
-        let chapter = tracked-upper(text(size: 0.68em, current.body))
-        if current.numbering != none {
-          if is-odd {
-            align(aln)[#chapter #h(gap) #i]
-          } else {
-            align(aln)[#i #h(gap) #chapter]
-          }
-        }
-      }
-    },
-  )
+  // The header and footer start here.
+  [#metadata(none)<fmi-main>]
 
   // Configure equation numbering.
   set math.equation(numbering: "(1)")
 
   // Display inline code in a small box that retains the correct baseline.
   show raw.where(block: false): box.with(
-    fill: fill-color.darken(2%),
+    fill: colors.fill,
     inset: (x: 3pt, y: 0pt),
     outset: (y: 3pt),
     radius: 2pt,
   )
+
+  // Numbered boxes (see elements.typ) are figures, which do not break across pages
+  // by default.
+  show selector.or(..box-kinds.map(kind => figure.where(kind: kind))): set block(breakable: true)
 
   // Display block code with padding.
   show raw.where(block: true): block.with(inset: (x: 5pt))
@@ -483,7 +499,7 @@
   set table(
     // Increase the table cell's padding.
     inset: 7pt, // default is 5pt
-    stroke: (0.5pt + stroke-color),
+    stroke: (0.5pt + colors.stroke),
   )
   // Use smallcaps for table header row.
   show table.cell.where(y: 0): tracked-smallcaps
@@ -586,17 +602,3 @@
     )
   }
 }
-
-// This function formats its `body` (content) into a blockquote.
-#let blockquote(body) = {
-  block(
-    width: 100%,
-    fill: fill-color,
-    inset: 2em,
-    stroke: (y: 0.5pt + stroke-color),
-    body,
-  )
-}
-
-// A visible note for things that still need to be done.
-#let todo(it) = text(fill: luma(50), style: "italic", size: 0.8em, [\/\/ to do: ] + it)
